@@ -1,4 +1,4 @@
-from config import logging_config
+from bot.config import logging_config
 logging = logging_config.setup_logging(__name__)
 
 def check_winner(board, board_size, game_mode, random_mode, session_id, x_points, o_points, save_points, combos):

@@ -1,11 +1,11 @@
+import asyncio
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultArticle, InputTextMessageContent
 from bot.funcs.board import send_ttt_board, initialize_ttt_board
-from config import logging_config
-import asyncio
-
+from bot.core.common import safe_call
+from bot.config import logging_config
 logging = logging_config.setup_logging(__name__)
 
-async def update_buttons(client, session_id, session, message, selected_size, selected_mode, get_translation, FloodWait):
+async def update_buttons(client, session_id, session, message, selected_size, selected_mode, get_translation):
     board_size_buttons = [
         InlineKeyboardButton(
             f"{'>>' if selected_size == 3 else ''}3x3{'<<' if selected_size == 3 else ''}", 
@@ -51,24 +51,19 @@ async def update_buttons(client, session_id, session, message, selected_size, se
     keyboard.append([join_button])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    async def text_edit(client, message, session, reply_markup):
-        if message.inline_message_id:
-            await client.edit_inline_reply_markup(
-                inline_message_id=message.inline_message_id,
-                reply_markup=reply_markup,
-            )
-        else:
-            await client.edit_message_reply_markup(
-                chat_id=session["chat_id"], 
-                message_id=message.message.id, 
-                reply_markup=reply_markup
-            )
-    try:
-        await text_edit(client, message, session, reply_markup)
-    except FloodWait as e:
-        logging.warning(f"Session {session_id}: Flood wait error. Sleeping for {e.value} seconds.")
-        await asyncio.sleep(e.value)
-        await text_edit(client, message, session, reply_markup)
+    if message.inline_message_id:
+        await safe_call(
+            client.edit_inline_reply_markup,
+            inline_message_id=message.inline_message_id,
+            reply_markup=reply_markup,
+        )
+    else:
+        await safe_call(
+            client.edit_message_reply_markup,
+            chat_id=session["chat_id"], 
+            message_id=message.message.id, 
+            reply_markup=reply_markup
+        )
 
 async def ttt_start(session_id, sessions, message, get_translation):
     user = message.from_user
@@ -113,7 +108,7 @@ async def ttt_start(session_id, sessions, message, get_translation):
         sessions[session_id]["message_id"] = msg.id
         return sessions[session_id]["x"]["id"], sessions[session_id]["x"]["name"], msg.id
 
-async def join_ttt_o(session_id, sessions, client, callback_query, get_translation, session_cleanup_tasks, random, FloodWait):
+async def join_ttt_o(session_id, sessions, client, callback_query, get_translation, session_cleanup_tasks, random):
     user = callback_query.from_user
     if sessions.get(session_id) == None:
         await callback_query.answer(get_translation(callback_query.from_user.language_code, 'complete'))
@@ -145,26 +140,21 @@ async def join_ttt_o(session_id, sessions, client, callback_query, get_translati
 
         logging.debug(f"Session {session_id}: initialize board {sessions[session_id]["board_size"]}")
 
-        async def text_edit(client, session, get_translation):
-            if session["chat_id"] == None:
-                await client.edit_inline_text(
-                    inline_message_id=session["message_id"],
-                    text=f"{get_translation(session["lang"], "x")}: @{session['x']['name']}\n{get_translation(session["lang"], "o")}: @{session['o']['name']}\n{get_translation(session["lang"], "start_game")}",
-                )
-            else:
-                await callback_query.message.edit_text(
-                    f"{get_translation(session["lang"], "x")}: @{session['x']['name']}\n{get_translation(session["lang"], "o")}: @{session['o']['name']}\n{get_translation(session["lang"], "start_game")}"
-                )
-        try:
-            await text_edit(client, sessions[session_id], get_translation)
-        except FloodWait as e:
-            logging.warning(f"Session {session_id}: Flood wait error. Sleeping for {e.value} seconds.")
-            await asyncio.sleep(e.value)
-            await text_edit(client, sessions[session_id], get_translation)
+        if sessions[session_id]["chat_id"] == None:
+            await safe_call(
+                client.edit_inline_text,
+                inline_message_id=sessions[session_id]["message_id"],
+                text=f"{get_translation(sessions[session_id]["lang"], "x")}: @{sessions[session_id]['x']['name']}\n{get_translation(sessions[session_id]["lang"], "o")}: @{sessions[session_id]['o']['name']}\n{get_translation(sessions[session_id]["lang"], "start_game")}",
+            )
+        else:
+            await safe_call(
+                callback_query.message.edit_text,
+                f"{get_translation(sessions[session_id]["lang"], "x")}: @{sessions[session_id]['x']['name']}\n{get_translation(sessions[session_id]["lang"], "o")}: @{sessions[session_id]['o']['name']}\n{get_translation(sessions[session_id]["lang"], "start_game")}"
+            )
 
         next_player = "🔴" if sessions[session_id]["next_move"] == "O" else "❌"
         logging.debug(f"Session {session_id}: start move {sessions[session_id]["next_move"]}")
-        await send_ttt_board(session_id, client, sessions[session_id], get_translation, FloodWait, next_player)
+        await send_ttt_board(session_id, client, sessions[session_id], get_translation, next_player)
     else:
         await callback_query.answer(get_translation(sessions[session_id]["lang"], "game_started"))
 

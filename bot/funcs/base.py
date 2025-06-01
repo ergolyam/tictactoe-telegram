@@ -1,5 +1,4 @@
 import random, uuid
-from pyrogram.errors import FloodWait
 from bot.funcs.invite import ttt_start, join_ttt_o, update_buttons
 from bot.funcs.game import move_ttt
 from bot.core.common import Common
@@ -108,7 +107,6 @@ async def board_size_selection(client, callback_query):
         size,
         sessions[session_id]["game_mode"],
         get_translation,
-        FloodWait
     )
     await callback_query.answer(
         f"{get_translation(sessions[session_id]["lang"], "select")}"
@@ -154,7 +152,6 @@ async def game_mode_selection(client, callback_query):
         sessions[session_id]["board_size"],
         mode,
         get_translation,
-        FloodWait
     )
     await callback_query.answer(
         f"{get_translation(sessions[session_id]["lang"], "select")}"
@@ -181,7 +178,6 @@ async def player_o_join(client, callback_query):
         get_translation,
         session_cleanup_tasks,
         random,
-        FloodWait
     )
 
 
@@ -198,7 +194,6 @@ async def player_move(client, callback_query):
             session_id,
             get_translation,
             save_points,
-            FloodWait
         )
     else:
         await callback_query.answer(

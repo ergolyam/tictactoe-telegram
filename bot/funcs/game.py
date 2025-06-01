@@ -1,9 +1,9 @@
 from bot.funcs.board import update_ttt_board, board_states, send_ttt_board, del_ttt_board
 from bot.funcs.rules import check_winner
-from config import logging_config
+from bot.config import logging_config
 logging = logging_config.setup_logging(__name__)
 
-async def move_ttt(client, callback_query, session, position: int, session_id: str, get_translation, save_points, FloodWait):
+async def move_ttt(client, callback_query, session, position: int, session_id: str, get_translation, save_points):
     user = callback_query.from_user
 
     if session["next_move"] == "X" and user.id != session["x"]["id"]:
@@ -30,27 +30,27 @@ async def move_ttt(client, callback_query, session, position: int, session_id: s
     logging.debug(f"Session {session_id}: Check winner: {winner}")
     
     if winner == "X":
-        await send_ttt_board(session_id, client, session, get_translation, FloodWait, winner="X", winning_combo=combo)
+        await send_ttt_board(session_id, client, session, get_translation, winner="X", winning_combo=combo)
         del_ttt_board(session_id)
         session["next_move"] = "D"
 
     elif winner == "X wins by points":
-        await send_ttt_board(session_id, client, session, get_translation, FloodWait, winner="X_P", winning_combo=combo)
+        await send_ttt_board(session_id, client, session, get_translation, winner="X_P", winning_combo=combo)
         del_ttt_board(session_id)
         session["next_move"] = "D"
         
     elif winner == "O":
-        await send_ttt_board(session_id, client, session, get_translation, FloodWait, winner="O", winning_combo=combo)
+        await send_ttt_board(session_id, client, session, get_translation, winner="O", winning_combo=combo)
         del_ttt_board(session_id)
         session["next_move"] = "D"
 
     elif winner == "O wins by points":
-        await send_ttt_board(session_id, client, session, get_translation, FloodWait, winner="O_P", winning_combo=combo)
+        await send_ttt_board(session_id, client, session, get_translation, winner="O_P", winning_combo=combo)
         del_ttt_board(session_id)
         session["next_move"] = "D"
         
     elif winner == "draw":
-        await send_ttt_board(session_id, client, session, get_translation, FloodWait, winner="D")
+        await send_ttt_board(session_id, client, session, get_translation, winner="D")
         del_ttt_board(session_id)
         session["next_move"] = "D"
         
@@ -58,7 +58,7 @@ async def move_ttt(client, callback_query, session, position: int, session_id: s
         session["next_move"] = "O" if player_symbol == "X" else "X"
         next_player = "🔴" if session["next_move"] == "O" else "❌"
         logging.debug(f"Session {session_id}: next move {session["next_move"]}")
-        await send_ttt_board(session_id, client, session, get_translation, FloodWait, current_player=next_player)
+        await send_ttt_board(session_id, client, session, get_translation, current_player=next_player)
 
 if __name__ == "__main__":
     raise RuntimeError("This module should be run only via main.py")
