@@ -1,0 +1,14 @@
+[project]
+name = "tictactoe-telegram"
+version = "0.1.0"
+description = "tic-tac-toe game bot right in telegram"
+readme = "readme.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyrofork>=2.3.63",
+    "tgcrypto-pyrofork>=1.2.7",
+]
+
+[tool.pyright]
+venvPath = '.'
+venv = '.venv'
