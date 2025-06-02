@@ -21,9 +21,9 @@ python -m venv .venv
 ### Deploy
 
 - Run the bot:
-  ```bash
-  .venv/bin/python bot
-  ```
+    ```bash
+    TG_TOKEN="telegram_bot_token" .venv/bin/python bot
+    ```
 
 ### Container
 
