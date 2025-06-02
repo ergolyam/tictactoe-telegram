@@ -1,5 +1,4 @@
 # tictactoe-telegram
-
 Play Tic‑Tac‑Toe (and a couple of fun variants) right inside Telegram chats. The bot works entirely through inline queries and group commands, so no extra websites or apps are needed.
 
 ### Initial Setup
