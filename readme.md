@@ -49,7 +49,7 @@ The following environment variables control the startup of the project:
 | `LOG_LEVEL`    | `DEBUG`, `INFO`, `WARNING`, `ERROR` | Logging verbosity                                                       |
 | `TG_ID`        | *integer*                           | Telegram API ID from [https://my.telegram.org](https://my.telegram.org) |
 | `TG_HASH`      | *string*                            | Telegram API hash                                                       |
-| `TG_TOKEN`     | *string*                            | Bot token issued by @BotFather                                          |
+| `TG_TOKEN`     | *string*                            | Bot token issued by [@BotFather](https://t.me/BotFather)                |
 
 ## Features
 
