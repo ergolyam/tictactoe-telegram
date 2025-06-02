@@ -65,7 +65,7 @@ The following environment variables control the startup of the project:
 - Stateless hosting – no database required; state is kept in‑memory with optional periodic cleanup
 - Docker‑ready – zero‑dependency image shipped on each push to main
 
-# Adding new languages
+## Adding new languages
 
 - Copy bot/config/lang/en.json and translate the values.
 - Name the file with the locale code (e.g. es.json).
