@@ -9,7 +9,8 @@ app = Client(
     name="bot",
     api_id=Config.tg_id,
     api_hash=Config.tg_hash,
-    bot_token=Config.tg_token
+    bot_token=Config.tg_token,
+    sleep_threshold=0
 )
 init_handlers(app)
 
