@@ -8,7 +8,7 @@ Play Tic‑Tac‑Toe (and a couple of fun variants) right inside Telegram chats.
 3. **Download Dependencies**: Download the required dependencies into the Virtual Environment `venv` using `uv`.
 
 ```shell
-git clone https://github.com/grisha765/tictactoe-telegram.git
+git clone https://github.com/ergolyam/tictactoe-telegram.git
 cd tictactoe-telegram
 python -m venv .venv
 .venv/bin/python -m pip install uv
@@ -28,7 +28,7 @@ python -m venv .venv
 
 - Pull the container:
     ```bash
-    podman pull ghcr.io/grisha765/tictactoe-telegram:latest
+    podman pull ghcr.io/ergolyam/tictactoe-telegram:latest
     ```
 
 - Deploy using Podman:
@@ -36,7 +36,7 @@ python -m venv .venv
     podman run \
     --name tictactoe-telegram \
     -e TG_TOKEN="your_telegram_bot_token" \
-    ghcr.io/grisha765/tictactoe-telegram:latest
+    ghcr.io/ergolyam/tictactoe-telegram:latest
     ```
 
 ## Environment Variables
